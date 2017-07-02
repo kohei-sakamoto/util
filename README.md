@@ -4,7 +4,7 @@ Various utilities.
 
 ## directries
 
-* programming: utilities for programmming.
+* devel: utilities for programmming.
 
 ## License
 
