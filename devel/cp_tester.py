@@ -21,6 +21,8 @@ Requirement:
 
 import sys
 import json
+import time
+import math
 from subprocess import Popen, PIPE, STDOUT
 
 argv = sys.argv
@@ -37,14 +39,20 @@ def test(cmd, test_case):
       test_case: one test case setting
     """
     input = "\n".join(test_case["input"])
+
+    p = Popen([cmd], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+    start  = time.time()
+    stdout = p.communicate(input = input.encode("utf8"))[0]
+    end    = time.time()
+
     print("input")
     print(input)
 
-    p = Popen([cmd], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-    stdout = p.communicate(input = input.encode("utf8"))[0]
-    output = stdout.decode("utf8")
+    diff   = end - start
+    print("process time : {0}".format(math.floor(diff*1000 + 0.5)))
 
     print("output")
+    output = stdout.decode("utf8")
     print(output)
     if "output" not in test_case:
         return;
