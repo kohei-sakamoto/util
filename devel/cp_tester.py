@@ -64,7 +64,19 @@ def read_test_file(filename):
                 current_data["input"] += line
             else:
                 current_data["output"] += line
+    
+    test_data.append(current_data);
     return test_data
+
+def is_same_str(rhs, lhs):
+    rhs_lines = rhs.rstrip().split("\n")
+    lhs_lines = lhs.rstrip().split("\n")
+    
+    if len(rhs_lines) != len(rhs_lines):
+        return false
+    
+    comp = zip(rhs_lines, lhs_lines)
+    return all(map(lambda x: x[0].rstrip() == x[1].rstrip(), comp))
 
 def test(cmd, test_case):
     """test cmd with one test_case
@@ -82,7 +94,7 @@ def test(cmd, test_case):
     print(input)
 
     diff   = end - start
-    print("process time : {0}".format(math.floor(diff*1000 + 0.5)))
+    print("process time : {0}\n".format(math.floor(diff*1000 + 0.5)))
 
     print("output")
     output = stdout.decode("utf8")
@@ -91,7 +103,7 @@ def test(cmd, test_case):
         return;
 
     expected = test_case["output"]
-    if output.rstrip() == expected.rstrip():
+    if is_same_str(output, expected):
         print("OK")
     else:
         print("NG : expected")
@@ -108,3 +120,4 @@ test_data = read_test_file(test_file)
 for i, test_case in enumerate(test_data):
     print("test case {0}...".format(i))
     test(argv[1], test_case)
+    print("\n")
