@@ -78,6 +78,14 @@ def is_same_str(rhs, lhs):
     comp = zip(rhs_lines, lhs_lines)
     return all(map(lambda x: x[0].rstrip() == x[1].rstrip(), comp))
 
+def get_lines(p):
+    while True:
+        line = p.stdout.readline()
+        if line:
+            yield line
+        if not line and p.poll() is not None:
+            break
+
 def test(cmd, test_case):
     """test cmd with one test_case
       cmd:       name of command for test
@@ -87,17 +95,23 @@ def test(cmd, test_case):
 
     p = Popen([cmd], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
     start  = time.time()
-    stdout = p.communicate(input = input.encode("utf8"))[0]
-    end    = time.time()
 
     print("input")
     print(input)
-
+    
+    p.stdin.write(input.encode("utf8"))
+    p.stdin.flush()
+    output = ""
+    for line in get_lines(p):
+        line_str = line.decode("utf8")
+        sys.stdout.write(line_str)
+        output += line_str
+    
+    end    = time.time()
     diff   = end - start
     print("process time : {0}\n".format(math.floor(diff*1000 + 0.5)))
 
     print("output")
-    output = stdout.decode("utf8")
     print(output)
     if "output" not in test_case:
         return;
