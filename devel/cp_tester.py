@@ -72,8 +72,8 @@ def is_same_str(rhs, lhs):
     rhs_lines = rhs.rstrip().split("\n")
     lhs_lines = lhs.rstrip().split("\n")
     
-    if len(rhs_lines) != len(rhs_lines):
-        return false
+    if len(rhs_lines) != len(lhs_lines):
+        return False
     
     comp = zip(rhs_lines, lhs_lines)
     return all(map(lambda x: x[0].rstrip() == x[1].rstrip(), comp))
@@ -92,6 +92,8 @@ def test(cmd, test_case):
       test_case: one test case setting
     """
     input = test_case["input"]
+    if "output" not in test_case:
+        return;
 
     p = Popen([cmd], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
     start  = time.time()
@@ -101,6 +103,8 @@ def test(cmd, test_case):
     
     p.stdin.write(input.encode("utf8"))
     p.stdin.flush()
+    
+    print("output")
     output = ""
     for line in get_lines(p):
         line_str = line.decode("utf8")
@@ -110,11 +114,6 @@ def test(cmd, test_case):
     end    = time.time()
     diff   = end - start
     print("process time : {0}\n".format(math.floor(diff*1000 + 0.5)))
-
-    print("output")
-    print(output)
-    if "output" not in test_case:
-        return;
 
     expected = test_case["output"]
     if is_same_str(output, expected):
