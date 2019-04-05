@@ -118,10 +118,14 @@ def test(cmd, test_case):
     expected = test_case["output"]
     if is_same_str(output, expected):
         print("OK")
+        return True
     else:
         print("NG : expected")
         print(expected)
+        return False
 
+
+# Main
 
 if (argc < 3):
     usage()
@@ -130,7 +134,15 @@ if (argc < 3):
 test_file = argv[2]
 test_data = read_test_file(test_file)
 
+result = True
 for i, test_case in enumerate(test_data):
     print("test case {0}...".format(i))
-    test(argv[1], test_case)
+    ret = test(argv[1], test_case)
+    if ret == False:
+    	result = False
     print("\n")
+
+if result:
+	print("ALL OK\n")
+else:
+	print("HAS NG\n")
